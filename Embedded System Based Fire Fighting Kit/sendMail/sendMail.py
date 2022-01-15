@@ -28,8 +28,8 @@ serverSMTP.login('2018.aman.singh@ves.ac.in', 'wnptzbactskrdnwl')
 
 
 
-names, emails = get_contacts('C:\Users\Aman Singh\Desktop\sendMail\mycontacts.txt')  # read contacts
-message_template = read_template('C:\Users\Aman Singh\Desktop\sendMail\message.txt') # read template
+names, emails = get_contacts('mycontacts.txt')  # read contacts
+message_template = read_template('message.txt') # read template
 
 # For each contact, send the email:
 for name, email in zip(names, emails):
