@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FireFighterVision</title>
+    <style>
+
+        .chartMenu{
+        width: 100vw;
+        height: 40px;
+        background: #1A1A1A;
+        color: rgba(255, 26, 104, 1);
+      }
+        .chartMenu p {
+        padding: 10px;
+        font-size: 20px;
+      }
+        
+      .chartCard {
+        width: 100vw;
+        height: calc(100vh - 40px);
+        background: rgba(255, 26, 104, 0.2);
+        display: flex;
+        align-items: right;
+        justify-content: right;
+      }
+      .chartBox {
+      
+        width: 400px;
+        height:200px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(255, 26, 104, 1);
+        background: white;
+      }
+    </style>
+    <!-- Bootstraps Java Scipts Links -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <!-- JQuery links  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!--High CHART LIVE  -->
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+  </head>
+  <body>
+    <!--Video block-->
+    <div class="chartMenu">
+    <!--<p>Video Streaming Demonstration</p> -->
+    <p style="padding: 18px; border: 2px solid red;width: 15%;height: 10%">ID: -1234567</p>
+    <img id="bg" class="center" height="650" width ="60%" src="{{ url_for('video_feed') }}">
+
+    </div>
+      <div class="chartCard">  
+      <div class="chartBox">
+      <div class="jumbotron">
+      </div>
+
+      <br>
+      <br>
+    
+    
+      <div class="container-fluid">
+          <!-- Example row of columns -->
+          <div class="row">
+            <div class="container-fluid" id="data-container">
+            </div>
+          </div>
+      </div>
+    
+      <script>
+        var chart;
+        function requestData()
+            {
+              // Ajax call to get the Data from Flask
+              var requests = $.get('/data');
+              var tm = requests.done(function (result) {
+                var series = chart.series[0],
+                shift = series.data.length > 20;
+                // add the point
+                chart.series[0].addPoint(result, true, shift);
+                // call it again after one second
+                setTimeout(requestData, 2000);
+              });
+            }
+    
+            $(document).ready(function() {
+                chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'data-container',
+                        defaultSeriesType: 'spline',
+                        events: {
+                            load: requestData
+                        }
+                    },
+                    title: {
+                        text: 'Live random data'
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        tickPixelInterval: 150,
+                        maxZoom: 20 * 1000
+                    },
+                    yAxis: {
+                        minPadding: 0.2,
+                        maxPadding: 0.2,
+                        title: {
+                            text: 'Heart Rate',
+                            margin: 80
+                        }
+                    },
+                    series: [{
+                        name: 'Random data',
+                        data: []
+                    }]
+                });
+    
+            });
+      </script>
+      <br><br><br>
+	  <canvas id="myChart2"></canvas>
+
+      </div>
+      </div>
+       
+   
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script>
+    // setup 
+
+    // SETUP block
+  const labels = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+];
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'Temperature sensor',
+    backgroundColor: 'rgb(255, 99, 132)',
+    borderColor: 'rgb(255, 99, 132)',
+    data: [0, 10, 5, 2, 20, 30, 45],
+  },{
+    label: 'Heart Rate Sensor',
+    backgroundColor: 'rgb(255, 255, 0)',
+    borderColor: 'rgb(255,255 , 0)',
+    data: [10, 10, 5, 2, 20, 30, 45],
+  
+  }]
+};
+    
+
+     // CONFIG BLOCK
+
+  const config = {
+  type: 'line',
+  data: data,
+  options: {}
+};
+
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+
+ // render linechart
+  
+
+
+ 
+ const data2 = {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Weekly Sales',
+        data: [18, 12, 6, 9, 12, 3, 9],
+        backgroundColor: [
+          'rgba(255, 26, 104, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(0, 0, 0, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 26, 104, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(0, 0, 0, 1)'
+        ],
+        borderWidth: 1
+      }]
+    };
+
+    // config 
+    const config2 = {
+      type: 'line',
+      data,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+
+    // render init block
+    const myChart2 = new Chart(
+      document.getElementById('myChart2'),
+      config2
+    );
+ 
+      </script>
+
+ 
+  </body>
+</html>
