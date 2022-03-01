@@ -25,12 +25,19 @@
         align-items: right;
         justify-content: right;
       }
-      .chartBox {
-      
-        width: 400px;
-        height:200px;
-        padding: 20px;
-        border-radius: 20px;
+      .chartBoxHR {
+        position: static;
+        width: 612px;
+        height:300px;
+        padding: 5px;
+        border: solid 3px rgba(255, 26, 104, 1);
+        background: white;
+      }
+      .chartBoxDHT22 {
+        top: 500px;
+        width: 612px;
+        height:300px;
+        padding: 5px;
         border: solid 3px rgba(255, 26, 104, 1);
         background: white;
       }
@@ -49,58 +56,75 @@
     <script src="http://code.highcharts.com/highcharts-more.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
   </head>
+  
   <body>
     <!--Video block-->
     <div class="chartMenu">
     <!--<p>Video Streaming Demonstration</p> -->
-    <p style="padding: 18px; border: 2px solid red;width: 15%;height: 10%">ID: -1234567</p>
-    <img id="bg" class="center" height="650" width ="60%" src="{{ url_for('video_feed') }}">
+    <p style="padding: 13px; width: 15%; height: 1%">ID: 1234567</p>
+    <img id="bg" class="center" height="680" width ="60%" src="{{ url_for('video_feed') }}">
 
     </div>
-      <div class="chartCard">  
-      <div class="chartBox">
-      <div class="jumbotron">
-      </div>
+      <div class="chartCard">
+        <div class="chartBoxHR">
+          <div class="container-fluid" id="heartrate-container" style="width:600px; height:289px; float: left"></div>
+        <div class="chartBoxDHT22">
+          <div class="container-fluid" id="dht22-container" style="width:600px; height:289px; float: left"></div>
+        </div>
+    </div>
 
-      <br>
-      <br>
-    
-    
-      <div class="container-fluid">
-          <!-- Example row of columns -->
-          <div class="row">
-            <div class="container-fluid" id="data-container">
-            </div>
-          </div>
-      </div>
-    
+    <br>
+    <br>
+
       <script>
-        var chart;
-        function requestData()
+        var chartHR;
+        var chartDHT;
+        //request heart rate data from flask
+        function requestHRData()
             {
               // Ajax call to get the Data from Flask
-              var requests = $.get('/data');
+              var requests = $.get('/HRdata');
               var tm = requests.done(function (result) {
-                var series = chart.series[0],
+                var series = chartHR.series[0],
                 shift = series.data.length > 20;
                 // add the point
-                chart.series[0].addPoint(result, true, shift);
-                // call it again after one second
-                setTimeout(requestData, 2000);
+                chartHR.series[0].addPoint(result, true, shift);
+                // call it again after specified second
+                setTimeout(requestHRData, 1000);
               });
             }
-    
+
+        //request temperature data from flask
+        function requestDHT22Data()
+        {
+          // Ajax call to get the Data from Flask
+          var requests = $.get('/DHT22data');
+          var tm = requests.done(function (result) {
+            var series = chartDHT.series[0],
+            shift = series.data.length > 20;
+            // add the point
+            chartDHT.series[0].addPoint(result, true, shift);
+            // call it again after specified second
+            setTimeout(requestDHT22Data, 1000);
+          });
+        }
+
+
+        // plot Heart rate data
             $(document).ready(function() {
-                chart = new Highcharts.Chart({
+                chartHR = new Highcharts.Chart({
                     chart: {
-                        renderTo: 'data-container',
-                        defaultSeriesType: 'spline',
+                        renderTo: 'heartrate-container',
+                        defaultSeriesType: 'line',
+                        //margin: [0, 0, 0, 0],
+                        //width: 610,
+                        //height: '289px',
                         events: {
-                            load: requestData
+                            load: requestHRData
                         }
                     },
                     title: {
-                        text: 'Live random data'
+                        text: 'Heart Rate Data'
                     },
                     xAxis: {
                         type: 'datetime',
@@ -112,7 +136,7 @@
                         maxPadding: 0.2,
                         title: {
                             text: 'Heart Rate',
-                            margin: 80
+                            margin: 10
                         }
                     },
                     series: [{
@@ -122,112 +146,63 @@
                 });
     
             });
-      </script>
-      <br><br><br>
-	  <canvas id="myChart2"></canvas>
 
-      </div>
-      </div>
-       
-   
+            // plot DHT22 data
+            $(document).ready(function() {
+              chartDHT = new Highcharts.Chart({
+                  chart: {
+                      renderTo: 'dht22-container',
+                      defaultSeriesType: 'line',
+                      //margin: [0, 0, 0, 0],
+                      //width: 610,
+                      //height: '289px',
+                      events: {
+                          load: requestDHT22Data
+                      }
+                  },
+                  title: {
+                      text: 'Heart Rate Data'
+                  },
+                  xAxis: {
+                      type: 'datetime',
+                      tickPixelInterval: 150,
+                      maxZoom: 20 * 1000
+                  },
+                  yAxis: {
+                      minPadding: 0.2,
+                      maxPadding: 0.2,
+                      title: {
+                          text: 'Heart Rate',
+                          margin: 10
+                      }
+                  },
+                  series: [{
+                      name: 'Random data',
+                      data: []
+                  }]
+              });
+          });
+      </script>
+
+    <!--
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
+    does nothing but seems important
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     <script>
-    // setup 
-
-    // SETUP block
-  const labels = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-];
-const data = {
-  labels: labels,
-  datasets: [{
-    label: 'Temperature sensor',
-    backgroundColor: 'rgb(255, 99, 132)',
-    borderColor: 'rgb(255, 99, 132)',
-    data: [0, 10, 5, 2, 20, 30, 45],
-  },{
-    label: 'Heart Rate Sensor',
-    backgroundColor: 'rgb(255, 255, 0)',
-    borderColor: 'rgb(255,255 , 0)',
-    data: [10, 10, 5, 2, 20, 30, 45],
-  
-  }]
-};
-    
-
-     // CONFIG BLOCK
-
-  const config = {
-  type: 'line',
-  data: data,
-  options: {}
-};
-
-  const myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
-
- // render linechart
-  
-
-
- 
- const data2 = {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [{
-        label: 'Weekly Sales',
-        data: [18, 12, 6, 9, 12, 3, 9],
-        backgroundColor: [
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(0, 0, 0, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
-        borderWidth: 1
-      }]
-    };
-
-    // config 
-    const config2 = {
-      type: 'line',
-      data,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    };
-
-    // render init block
-    const myChart2 = new Chart(
-      document.getElementById('myChart2'),
-      config2
-    );
- 
-      </script>
-
+      // CONFIG BLOCK
+      const config = {
+        type: 'line',
+        data: data,
+        options: {}
+      };
+      const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+      );
+    </script>
+    -->
  
   </body>
 </html>
