@@ -25,19 +25,25 @@
         align-items: right;
         justify-content: right;
       }
+
       .chartBoxHR {
-        position: static;
         width: 612px;
         height:300px;
         padding: 5px;
+        position:absolute; 
+        left: 60%;
+        top: 12%;
         border: solid 3px rgba(255, 26, 104, 1);
         background: white;
       }
+      
       .chartBoxDHT22 {
-        top: 500px;
         width: 612px;
         height:300px;
         padding: 5px;
+        position:absolute; 
+        left: 60%;
+        top: 55.9%;
         border: solid 3px rgba(255, 26, 104, 1);
         background: white;
       }
@@ -60,23 +66,31 @@
   <body>
     <!--Video block-->
     <div class="chartMenu">
-    <!--<p>Video Streaming Demonstration</p> -->
+    <!--<p>Video Streaming</p> -->
     <p style="padding: 13px; width: 15%; height: 1%">ID: 1234567</p>
     <img id="bg" class="center" height="680" width ="60%" src="{{ url_for('video_feed') }}">
 
     </div>
       <div class="chartCard">
-        <div class="chartBoxHR">
-          <div class="container-fluid" id="heartrate-container" style="width:600px; height:289px; float: left"></div>
-        <div class="chartBoxDHT22">
-          <div class="container-fluid" id="dht22-container" style="width:600px; height:289px; float: left"></div>
+        <div class = "col">
+          <div class="chartBoxHR">
+            <div class="container-fluid" id="heartrate-container" style="width:600px; height:289px; float: left">
+              <div class="row"></div>
+            </div>
+          </div>
+          <div class="chartBoxDHT22">
+            <div class="container-fluid" id="dht22-container" style="width:600px; height:289px; float: left">
+              <div class="row"></div>
+            </div>
+          </div>
         </div>
+      </div>  
     </div>
 
     <br>
     <br>
 
-      <script>
+    <script>
         var chartHR;
         var chartDHT;
         //request heart rate data from flask
@@ -182,7 +196,7 @@
                   }]
               });
           });
-      </script>
+    </script>
 
     <!--
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
