@@ -24,13 +24,23 @@ def index():
             return redirect(url_for('home'))
     return render_template('loginPage.html',error=error)
 
-#get sensors data in the flask server for plotting
-@app.route('/data', methods=["GET", "POST"])
-def data():
-    data = [time() * 1000,sensorData.HeartRate()]
-    response = make_response(json.dumps(data))
+
+#get HR data in the flask server for plotting
+@app.route('/HRdata', methods=["GET", "POST"])
+def HRdata():
+    HRdata = [time() * 1000,sensorData.HeartRate()]
+    response = make_response(json.dumps(HRdata))
     response.content_type = 'application/json'
     return response
+
+#get DHT22 data in the flask server for plotting
+@app.route('/DHT22data', methods=["GET", "POST"])
+def DHT22data():
+    DHT22data = [time() * 1000,sensorData.HeartRate()]
+    response = make_response(json.dumps(DHT22data))
+    response.content_type = 'application/json'
+    return response
+
 
 def gen(camera):
     while True:
@@ -48,4 +58,3 @@ def video_feed():
 if __name__ == '__main__':
     app.run(host="192.168.0.103",port = 5000, debug=True)
     sendMail()
-
